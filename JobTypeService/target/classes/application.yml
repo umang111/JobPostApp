@@ -1,0 +1,13 @@
+server:
+  port: 8001
+spring:
+  datasource:
+    username: postgres
+    url: jdbc:postgresql://localhost:5432/jobapp_typeservice
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  application:
+    name: restaurant-service
