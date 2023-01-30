@@ -1,0 +1,60 @@
+server:
+  port: 8500
+spring:
+  application:
+    name: get-job-post-service
+  config:
+    import: configserver:http://localhost:8085
+    
+    
+management:
+  health:
+    circuitbreakers:
+      enabled: true    
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always      
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      getJobByIdBreaker:
+        register-health-indicator: true
+        event-consumer-buffer-size: 10
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state: 6s
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-size: 10
+        sliding-window-type: COUNT_BASED
+        
+        
+# for retry 
+  retry:
+    instances:
+      getJobDataService:
+        max-attempts: 3
+        wait-duration: 5s
+      
+        
+# for rate limiter
+  ratelimiter:
+    instances:
+      getJobDavaLimiter:
+        limit-refresh-period: 4s
+        limit-for-period: 2
+        timeout-duration: 2s
+
+
+       
+#eureka:
+#  instance:
+#    prefer-ip-address: true
+#  client:
+#    fetch-registry: true
+
